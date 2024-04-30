@@ -1,6 +1,19 @@
 import styled from 'styled-components';
+import { removeEventSetThunk, toglleModalAdd, toglleModalToggle } from '../../../feature/exercises/exercises-slise';
+import { useDispatch, useSelector } from 'react-redux';
 
-function FormApproach({ onSubmit, forInput, event }) {
+function FormApproach({ onSubmit, forInput, event, approachesId }) {
+  const dispatch = useDispatch();
+  const { modalAdd, modalToggle } = useSelector(state => state.exercises)
+
+  const redirect = () => {
+    if (modalAdd) {
+      dispatch(toglleModalAdd())
+    } else if (modalToggle) {
+      dispatch(toglleModalToggle())
+    }
+
+  }
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     forInput.setValuesInput(prevEvent => ({
@@ -8,8 +21,22 @@ function FormApproach({ onSubmit, forInput, event }) {
       [name]: value
     }));
   }
+  const removeEventSet = () => {
+    dispatch(removeEventSetThunk({ event, approachesId }))
+      .unwrap()
+      .then(() => {
+        // toast('')
+        alert('Вы удалили подход')
+        dispatch(toglleModalToggle())
+      })
+      .catch((error) => {
+        // toast('Error')
+        alert('Ошибка при удалении')
+      })
+  }
   return (
     <Container>
+      <Title onClick={() => redirect()}>Назад</Title>
       <Title>{event.title}</Title>
       <Form onSubmit={onSubmit}>
         <Label>
@@ -24,6 +51,7 @@ function FormApproach({ onSubmit, forInput, event }) {
         </Label>
         <button type="submit">Готово</button>
       </Form>
+      {modalToggle && <Title onClick={() => removeEventSet()}>Удалить повторение</Title>}
     </Container>
   );
 }

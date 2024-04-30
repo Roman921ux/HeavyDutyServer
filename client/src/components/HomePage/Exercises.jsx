@@ -3,7 +3,7 @@ import ExercisesItem from './ExercisesItem'
 import ExercisesAddItem from './ExercisesAddItem'
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { ToggleApproaches, ToggleEvent, setTime, toglleModalAdd, toglleModalToggle } from '../../feature/exercises/exercises-slise';
+import { ToggleApproaches, ToggleEvent, addEventSetThunk, setTime, toggleEventSetThunk, toglleModalAdd, toglleModalToggle } from '../../feature/exercises/exercises-slise';
 import FormApproach from './Exercises/FormApproach';
 
 function Exercises() {
@@ -24,10 +24,15 @@ function Exercises() {
   const currentDateString = date.slice(0, 10);
   const eventsToday = events.filter(event => event.start.slice(0, 10) === currentDateString);
 
-  const toggleModal = (event) => {
+  const toggleModal = (event, modal) => {
+    if (modal === 'add') {
+      dispatch(toglleModalAdd())
+      setEvent(event)
+    } else if (modal === 'toggle') {
+      setEvent(event)
+    }
     // setModal(prev => !prev)
-    dispatch(toglleModalAdd())
-    setEvent(event)
+
   }
 
   const addApproachEvent = (e) => {
@@ -38,15 +43,15 @@ function Exercises() {
     }
     e.preventDefault();
     if (modalAdd) {
-      dispatch(ToggleEvent({ event, valuesInput }))
+      dispatch(addEventSetThunk({ event, valuesInput }))
       setValuesInput({
         kg: 0,
         repeat: 0
       })
       dispatch(toglleModalAdd())
     } else if (modalToggle) {
-      console.log('Event', event, 'ValueInput', valuesInput)
-      dispatch(ToggleApproaches({ event, valuesInput, approachesId }))
+      // console.log('Event', event, 'ValueInput', valuesInput)
+      dispatch(toggleEventSetThunk({ event, valuesInput, approachesId }))
       setValuesInput({
         kg: 0,
         repeat: 0
@@ -59,11 +64,11 @@ function Exercises() {
 
   return (
     <Container>
-      {modalAdd || modalToggle ? (<FormApproach onSubmit={addApproachEvent} forInput={{ setValuesInput, valuesInput }} event={event} />)
+      {modalAdd || modalToggle ? (<FormApproach onSubmit={addApproachEvent} forInput={{ setValuesInput, valuesInput }} event={event} approachesId={approachesId} />)
         :
         (<>
           <span>Date: {date.substring(0, 10)}</span>
-          {eventsToday.map(event => <ExercisesItem event={event} setModal={toggleModal} />)}
+          {eventsToday.map(event => <ExercisesItem key={event._id} event={event} setModal={toggleModal} />)}
           <ExercisesAddItem />
         </>)
       }

@@ -20,21 +20,3 @@ const eventSchema = new mongoose.Schema({
 
 export default mongoose.model('Event', eventSchema);
 
-// const userId = '603e84b0935c8500157ddc47'; // Пример идентификатора пользователя
-
-// const newEvent = new Event({
-//   title: 'Встреча',
-//   description: 'Важная встреча на следующей неделе',
-//   start: new Date('2024-04-30T09:00:00'),
-//   approaches: [{ kg: 10, repeat: 5 }],
-//   user: userId, // Указываем идентификатор пользователя
-// });
-
-// newEvent.save()
-//   .then(event => {
-//     console.log('Событие успешно создано:', event);
-//   })
-//   .catch(error => {
-//     console.error('Ошибка при создании события:', error);
-//   });
-

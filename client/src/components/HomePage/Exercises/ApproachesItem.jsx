@@ -5,7 +5,7 @@ import FormApproach from './FormApproach';
 import { useState } from 'react';
 
 
-function ApproachesItem({ item, event }) {
+function ApproachesItem({ item, event, setModal }) {
   const { modalToggle } = useSelector(state => state.exercises);
   const [valuesInput, setValuesInput] = useState({
     kg: 0,
@@ -13,9 +13,8 @@ function ApproachesItem({ item, event }) {
   })
   const dispatch = useDispatch()
   const ToggleApproachesF = () => {
-    // setModal(prev => !prev)
-    // setModal(event)
-    dispatch(toglleModalToggle(item.id))
+    dispatch(toglleModalToggle(item._id))
+    setModal(event, 'toggle')
   }
   const addApproachEvent = (e) => {
     if (!valuesInput.repeat || !valuesInput.repeat) {

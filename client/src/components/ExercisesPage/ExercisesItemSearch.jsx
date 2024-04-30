@@ -1,17 +1,21 @@
 import styled from 'styled-components';
 import { PlusCircleOutlined, EllipsisOutlined } from '@ant-design/icons';
 import { useDispatch } from 'react-redux';
-import { addEvents, addExerciseInfo } from '../../feature/exercises/exercises-slise';
+import { addEvents, addExerciseInfo, createEventThunk } from '../../feature/exercises/exercises-slise';
 import { useNavigate } from 'react-router-dom';
 
 function ExercisesItemSearch({ exercise, date }) {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  console.log('exercise', exercise)
+  // console.log('exercise', exercise)
 
   const addExercise = () => {
-    const time = date.substring(0, 19);
-    dispatch(addEvents({ exercise, time }))
+    console.log('time for create event', date)
+    // const time = date.substring(0, 19);
+    const time = date;
+
+
+    dispatch(createEventThunk({ exercise, time }))
     navigate('/')
   }
   return (

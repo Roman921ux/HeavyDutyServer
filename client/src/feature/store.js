@@ -13,10 +13,12 @@ import storage from 'redux-persist/lib/storage'
 import { combineReducers } from 'redux'
 // reducers
 import { exercisesReducer } from "./exercises/exercises-slise"
+import { userReducer } from "./user/user-clise"
 
 
 const rootReducer = combineReducers({
   exercises: exercisesReducer,
+  user: userReducer,
 })
 
 const persistConfig = {

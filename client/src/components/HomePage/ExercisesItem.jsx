@@ -3,12 +3,32 @@ import { PlusCircleOutlined, EllipsisOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import ApproachesItem from './Exercises/ApproachesItem';
 import { useDispatch } from 'react-redux';
-import { removeEvent } from '../../feature/exercises/exercises-slise';
+import { getEventsThunk, removeEventThunk } from '../../feature/exercises/exercises-slise';
 
 function ExercisesItem({ event, setModal }) {
   const dispatch = useDispatch()
 
-  console.log('event', event)
+  const removeEvent = () => {
+    const userConfirmed = window.confirm("Точно удаляем?");
+
+    if (userConfirmed) {
+      // Пользователь согласился
+      dispatch(removeEventThunk(event._id))
+        .unwrap()
+        .then(() => {
+          dispatch(getEventsThunk())
+        })
+        .catch((error) => {
+          // toast('Error')
+          alert('Не получилось удалить')
+        })
+    } else {
+      // Пользователь отменил действие
+      // alert("Действие отменено.");
+    }
+
+  }
+
   return (
     <Container>
       <TopBlock>
@@ -18,15 +38,15 @@ function ExercisesItem({ event, setModal }) {
         </Block>
         <Block>
           {/* <PlusCircleOutlined style={{ fontSize: '20px' }} onClick={() => setModal(event)} /> */}
-          <Title onClick={() => setModal(event)}>🎲</Title>
-          <Title onClick={() => dispatch(removeEvent(event.id))}>Удалить</Title>
+          <Title onClick={() => setModal(event, 'add')}>🎲</Title>
+          <Title onClick={() => removeEvent()}>Удалить</Title>
           <EllipsisOutlined rotate={90} style={{ fontSize: '20px' }} />
         </Block>
       </TopBlock>
 
       {event.approaches && (
         <BlockApproach>
-          {event.approaches.map(item => <ApproachesItem item={item} event={event} />)}
+          {event.approaches.map(item => <ApproachesItem key={item._id} item={item} event={event} setModal={setModal} />)}
         </BlockApproach>
       )}
     </Container>

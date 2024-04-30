@@ -1,11 +1,29 @@
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, NavLink } from 'react-router-dom';
 import styled from 'styled-components';
+import { resetToken } from '../feature/user/user-clise';
 
 function Header() {
+  const { token } = useSelector(state => state.user);
+  const dispatch = useDispatch();
+
   return (
     <Container>
       <NavLink to='/' style={{ color: 'inherit' }}><Logo>Heavy Duty</Logo></NavLink>
-      <NavLink to='/exercises' style={{ color: 'inherit' }}><Nav>Упражнения</Nav></NavLink>
+      <div>
+        {token ?
+          (<NavBlock>
+            <NavLink to='/profile' style={{ color: 'inherit' }}><Nav>Профиль</Nav></NavLink>
+            <NavLink to='/exercises' style={{ color: 'inherit' }}><Nav>Упражнения</Nav></NavLink>
+            <button onClick={() => dispatch(resetToken())}>Выйти</button>
+          </NavBlock>)
+          :
+          (<NavBlock>
+            <NavLink to='/login' style={{ color: 'inherit' }}><Nav>login</Nav></NavLink>
+            <NavLink to='/register' style={{ color: 'inherit' }}><Nav>Register</Nav></NavLink>
+          </NavBlock>)
+        }
+      </div>
     </Container>
   );
 }
@@ -33,5 +51,11 @@ const Nav = styled.span`
   font-size: var(--middleText-size);
   font-weight: var(--middleText-weight);
   cursor: pointer;
+`
+
+const NavBlock = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 15px;
 `
 

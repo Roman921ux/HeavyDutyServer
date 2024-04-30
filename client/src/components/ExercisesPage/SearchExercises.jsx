@@ -5,47 +5,11 @@ import { useState } from 'react';
 import { selectVisibleExercises, toggleCategory } from '../../feature/exercises/exercises-slise';
 
 function SearchExercises() {
-  const { exercises, date, categoryExercise } = useSelector(state => state.exercises);
+  const { date, categoryExercise, categotyBtn } = useSelector(state => state.exercises);
   const dispatch = useDispatch()
   const [value, setValue] = useState('')
-  const CategotyBtn = [
-    {
-      title: 'все',
-      category: 'all'
-    },
-    {
-      title: 'грудь',
-      category: 'breast'
-    },
-    {
-      title: 'спина',
-      category: 'back'
-    },
-    {
-      title: 'ноги',
-      category: 'leg'
-    },
-    {
-      title: 'трицепс',
-      category: 'triceps'
-    },
-    {
-      title: 'плечи',
-      category: 'shoulders'
-    },
-    {
-      title: 'попка',
-      category: 'ass'
-    },
-  ]
 
-  // const filterExercises = exercises.filter(exercise => {
-  //   const title = exercise.title.toLowerCase();
-  //   const search = value.toLowerCase();
-
-  //   return title.includes(search);
-  // })
-  const filterExercises = useSelector(state => selectVisibleExercises(state.exercises, categoryExercise, value));
+  const filterExercises = useSelector(state => selectVisibleExercises(state.exercises, state.exercises.categoryExercise, value));
 
 
   return (
@@ -53,10 +17,10 @@ function SearchExercises() {
       <span>{categoryExercise}</span>
       <Search placeholder='Найди свое упражнение' value={value} onChange={(e) => setValue(e.target.value)} />
       <BlockBtn>
-        {CategotyBtn.map(item => <Btn onClick={() => { dispatch(toggleCategory(item.category)) }}>{item.title}</Btn>)}
+        {categotyBtn.map(item => <Btn key={item.category} onClick={() => { dispatch(toggleCategory(item.category)) }}>{item.title}</Btn>)}
       </BlockBtn>
       <AllExersise>
-        {filterExercises.map(exercise => <ExercisesItemSearch exercise={exercise} date={date} />)}
+        {filterExercises.map(exercise => <ExercisesItemSearch key={exercise._id} exercise={exercise} date={date} />)}
       </AllExersise>
     </Container>
   );

@@ -17,14 +17,14 @@ function Calendar() {
     start: null,
     end: null
   });
-  const [selectedDate, setSelectedDate] = useState(null);
+  // const [selectedDate, setSelectedDate] = useState(null);
 
   const handleDateClick = (arg) => {
     // При клике на дату сохраняем выбранную дату
-
     dispatch(setTime(new Date(new Date(arg.date).getTime() - (new Date(arg.date).getTimezoneOffset() * 60000)).toISOString()))
-    setSelectedDate(new Date(arg.date));
-    console.log('selectedDate in Calendar', selectedDate.toISOString())
+    // setSelectedDate(new Date(arg.date));
+
+    // console.log('selectedDate in Calendar', selectedDate.toISOString())
     setNewEvent({
       title: '',
       description: '',

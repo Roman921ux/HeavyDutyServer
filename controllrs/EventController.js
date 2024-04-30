@@ -91,3 +91,22 @@ export const updateEvent = async (req, res) => {
     res.status(500).json({ message: 'Произошла ошибка при обновлении подхода' });
   }
 }
+export const removeEventSet = async (req, res) => {
+  try {
+    const eventId = req.params.id; // ID события
+    const approachId = req.body.approachId; // ID объекта в массиве approaches
+
+    const removeEventSet = await EventModel.updateOne(
+      { _id: eventId },
+      { $pull: { approaches: { _id: approachId } } }
+    );
+
+    if (removeEventSet.nModified === 0) {
+      return res.status(404).json({ message: 'Не удалось удалить событие или объект в массиве approaches' });
+    }
+
+    res.json({ message: 'Объект в массиве approaches успешно удален' });
+  } catch (error) {
+    res.status(500).json({ message: 'Произошла ошибка при удалении подхода' });
+  }
+}

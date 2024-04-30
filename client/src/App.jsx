@@ -5,6 +5,10 @@ import HomePage from './pages/HomePage'
 import ExercisesPage from './pages/ExercisesPage'
 import NotFoundPage from './pages/NotFoundPage'
 import { Route, Routes } from 'react-router-dom'
+import LoginPage from './pages/LoginPage'
+import RegisterPage from './pages/RegisterPage'
+import ProfilePage from './pages/ProfilePage'
+import RequireAuth from './RequireAuth'
 
 function App() {
 
@@ -13,8 +17,24 @@ function App() {
       <Header />
       <Routes>
         <Route path="/" element={<Main />}>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/exercises" element={<ExercisesPage />} />
+          <Route path="/" element={
+            <RequireAuth>
+              <HomePage />
+            </RequireAuth>
+          } />
+          <Route path="/exercises" element={
+            <RequireAuth>
+              <ExercisesPage />
+            </RequireAuth>
+          } />
+          <Route path="/profile" element={
+            <RequireAuth>
+              <ProfilePage />
+            </RequireAuth>
+          } />
+
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>

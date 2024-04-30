@@ -1,89 +1,264 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { v4 as uuidv4 } from 'uuid';
+
+
+export const getEventsThunk = createAsyncThunk(
+  '@@exercise/getEvents',
+  async (_, { getState }) => {
+    try {
+      const { token } = getState().user
+      // console.log('Token in getEventsThunk', token)
+      const res = await fetch('http://localhost:4444/event', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      })
+
+      if (!res.ok) {
+        throw new Error('Failed to fetch event data');
+      }
+
+      const data = await res.json()
+      // console.log('getEventsThunk', data)
+      return data
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      throw error;
+    }
+  }
+)
+export const getExercisesThunk = createAsyncThunk(
+  '@@exercise/getExercises',
+  async (_, { getState }) => {
+    try {
+      const { token } = getState().user
+      // console.log('Token in getEventsThunk', token)
+      const res = await fetch('http://localhost:4444/exercise', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      })
+
+      if (!res.ok) {
+        throw new Error('Failed to fetch exercise data');
+      }
+
+      const data = await res.json()
+      // console.log('getExercisesThunk', data)
+      return data
+    } catch (error) {
+      console.error('Error fetching exercises data:', error);
+      throw error;
+    }
+  }
+)
+export const createEventThunk = createAsyncThunk(
+  '@@exercise/createEvent',
+  async (data, { getState }) => {
+    // достаем содержимое упражнения и дату на которую кликнули перед выбором
+    const exerciseData = data.exercise;
+    const time = data.time;
+    const { title, description, ...exercise } = exerciseData;
+    // формируем body
+    const bodyData = { title, description, start: time, approaches: [] }
+    console.log('bodyData', bodyData)
+    try {
+      const { token } = getState().user
+      console.log('Token in getEventsThunk', token)
+      const res = await fetch('http://localhost:4444/event', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(bodyData)
+      })
+
+      if (!res.ok) {
+        throw new Error('Failed to fetch exercise data');
+      }
+
+      const data = await res.json()
+      // console.log('createExercisesThunk', data)
+      return data
+    } catch (error) {
+      console.error('Error fetching exercises data:', error);
+      throw error;
+    }
+  }
+)
+export const removeEventThunk = createAsyncThunk(
+  '@@exercise/removeEvent',
+  async (id, { getState }) => {
+    // console.log('EventId', id)
+    try {
+      const { token } = getState().user
+      const res = await fetch(`http://localhost:4444/event/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      if (!res.ok) {
+        throw new Error('Failed to fetch exercise data');
+      }
+
+      const data = await res.json()
+      console.log('removeEventThunk', data)
+      // return data
+    } catch (error) {
+      console.error('Error fetching exercises data:', error);
+      throw error;
+    }
+  }
+)
+export const addEventSetThunk = createAsyncThunk(
+  '@@exercise/addEventSet',
+  async (obj, { getState, dispatch }) => {
+    const bodyData = { eventId: obj.event._id, newApproach: obj.valuesInput }
+
+    try {
+      const { token } = getState().user
+      const res = await fetch('http://localhost:4444/event/approach', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(bodyData)
+      })
+      // ошибка
+      if (!res.ok) {
+        throw new Error('Failed to fetch addEventSet data');
+      }
+
+      // все ok
+      const data = await res.json()
+      dispatch(getEventsThunk())
+    } catch (error) {
+      console.error('Error fetching addEventSetThunk data:', error);
+      throw error;
+    }
+  }
+)
+export const toggleEventSetThunk = createAsyncThunk(
+  '@@exercise/toggleEventSetThunk',
+  async (obj, { getState, dispatch }) => {
+    const eventId = obj.event._id
+    const bodyData = { approachId: obj.approachesId, approach: obj.valuesInput }
+    // console.log('toggleEventSetThunk', bodyData);
+    try {
+      const { token } = getState().user
+      const res = await fetch(`http://localhost:4444/event/${eventId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(bodyData)
+      })
+      // ошибка
+      if (!res.ok) {
+        throw new Error('Failed to fetch addEventSet data');
+      }
+
+      // все ok
+      const data = await res.json()
+      dispatch(getEventsThunk())
+    } catch (error) {
+      console.error('Error fetching addEventSetThunk data:', error);
+      throw error;
+    }
+  }
+)
+export const removeEventSetThunk = createAsyncThunk(
+  '@@exercise/removeEventSet',
+  async (obj, { getState, dispatch }) => {
+    // console.log('obj', obj)
+    const bodyData = { approachId: obj.approachesId }
+    const eventId = obj.event._id
+    try {
+      const { token } = getState().user
+      const res = await fetch(`http://localhost:4444/event/set/${eventId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(bodyData)
+      })
+      if (!res.ok) {
+        throw new Error('Failed to fetch exercise data');
+      }
+
+      dispatch(getEventsThunk())
+      const data = await res.json()
+      // console.log('removeEventSetThunk', data)
+      // return data
+    } catch (error) {
+      console.error('Error fetching exercises data:', error);
+      throw error;
+    }
+  }
+)
+
+
 
 const exercisesSlice = createSlice({
   name: '@@exercises',
   initialState: {
     date: '',
     events: [
-      { id: uuidv4(), title: 'Событие 1', start: '2024-04-23T10:00:00' },
+      // { id: uuidv4(), title: 'Событие 1', start: '2024-04-23T10:00:00' },
     ],
-    exercises: [
-      {
-        id: uuidv4(), title: 'Жим лежа', description: 'Info from Жим лежа', urlVideo: 'https://www.youtube.com/embed/uioH7LSL7Js?si=8VoBAWq8xAxUGN3q',
-        category: ['breast', 'triceps', 'shoulders']
-      },
-      {
-        id: uuidv4(), title: 'Жим ногами', description: 'Info from Жим лежа', urlVideo: 'https://www.youtube.com/embed/uioH7LSL7Js?si=8VoBAWq8xAxUGN3q',
-        category: ['leg']
-      },
-      {
-        id: uuidv4(), title: 'Разгибание ног', description: 'Info from Жим лежа', urlVideo: 'https://www.youtube.com/embed/uioH7LSL7Js?si=8VoBAWq8xAxUGN3q',
-        category: ['leg']
-      },
-      {
-        id: uuidv4(), title: 'Тяга вертикального блока к поясу', description: 'Info from Жим лежа', urlVideo: 'https://www.youtube.com/embed/uioH7LSL7Js?si=8VoBAWq8xAxUGN3q',
-        category: ['back', 'triceps']
-      },
-      {
-        id: uuidv4(), title: 'Тяга вертикального блока к низу', description: 'Info from Жим лежа', urlVideo: 'https://www.youtube.com/embed/uioH7LSL7Js?si=8VoBAWq8xAxUGN3q',
-        category: ['triceps']
-      },
-      {
-        id: uuidv4(), title: 'Становая тяга', description: 'Info from Становая тяга', urlVideo: 'https://www.youtube.com/embed/duSnLRneftc?si=4sv-8axbiLa5fBgK',
-        category: ['leg', 'back', 'ass']
-      },
-      {
-        id: uuidv4(), title: 'Приседание со штангой', description: 'Info from Приседание со штангой',
-        category: ['leg', 'ass', 'back']
-      },
-      {
-        id: uuidv4(), title: 'Разведение гантель в стороны', description: 'Info from Приседание со штангой',
-        category: ['shoulders']
-      },
-      {
-        id: uuidv4(), title: 'Тяга верхнего блока', description: 'Info from Приседание со штангой',
-        category: ['back', 'shoulders']
-      },
-      {
-        id: uuidv4(), title: 'Жим Арнольда', description: 'Info from Приседание со штангой',
-        category: ['breast', 'shoulders', 'back', 'triceps']
-      },
-    ],
+    exercises: [],
     exerciseInfo: { id: uuidv4(), title: 'Упражнение', description: 'Кликни по упражнению, чтобы посмотреть информацию о нем' },
     // инфа о каждом упражнении
     modalAdd: false,
     modalToggle: false,
     approachesId: '',
-    categoryExercise: 'leg',
+    categoryExercise: 'all',
+    categotyBtn: [
+      {
+        title: 'все',
+        category: 'all'
+      },
+      {
+        title: 'грудь',
+        category: 'breast'
+      },
+      {
+        title: 'спина',
+        category: 'back'
+      },
+      {
+        title: 'ноги',
+        category: 'leg'
+      },
+      {
+        title: 'трицепс',
+        category: 'triceps'
+      },
+      {
+        title: 'плечи',
+        category: 'shoulders'
+      },
+      {
+        title: 'попка',
+        category: 'ass'
+      },
+    ],
+    loading: 'idle',
+    error: null
   },
   reducers: {
     setTime: (state, action) => {
       state.date = action.payload;
-    },
-    addEvents: (state, action) => {
-      const event = { ...action.payload.exercise, id: uuidv4(), start: action.payload.time }
-      // console.log(event)
-      state.events = [...state.events, event]
-    },
-    ToggleEvent: (state, action) => {
-      // console.log('Action.payload', action.payload)
-      const updatedEvents = state.events.map(event => {
-        if (event.id === action.payload.event.id) {
-          console.log('нашел')
-          return {
-            ...event,
-            approaches: event.approaches ? [...event.approaches, { ...action.payload.valuesInput, id: uuidv4() }] : [{ ...action.payload.valuesInput, id: uuidv4() }],
-            // approaches: action.payload.valuesInput,
-          };
-        }
-        return event;
-      });
-
-      return { ...state, events: updatedEvents };
-    },
-    removeEvent: (state, action) => {
-      state.events = state.events.filter(event => event.id !== action.payload)
     },
     ToggleApproaches: (state, action) => {
       // console.log('Action.payload', action.payload)
@@ -132,12 +307,26 @@ const exercisesSlice = createSlice({
       state.categoryExercise = action.payload
     }
   },
-  // extraReducers: (builder) => {
-  //   builder
-  //     .addCase(resetToDefault, () => {
-  //       return []
-  //     })
-  // }
+  extraReducers: (builder) => {
+    builder
+      .addCase(getEventsThunk.fulfilled, (state, action) => {
+        state.events = action.payload
+      })
+      .addCase(getExercisesThunk.fulfilled, (state, action) => {
+        state.exercises = action.payload
+      })
+      .addMatcher((action) => action.type.endsWith('/pending'), (state) => {
+        state.loading = 'loading';
+        state.error = null;
+      })
+      .addMatcher((action) => action.type.endsWith('/rejected'), (state, action) => {
+        state.loading = 'idle';
+        state.error = 'Error'; // action.error.message
+      })
+      .addMatcher((action) => action.type.endsWith('/fulfilled'), (state, action) => {
+        state.loading = 'idle';
+      })
+  }
 })
 
 export const { setTime, addEvents, ToggleEvent, ToggleApproaches,
