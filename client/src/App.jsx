@@ -18,6 +18,15 @@ function App() {
       <Routes>
         <Route path="/" element={<Main />}>
           <Route path="/" element={
+            <HomePage />
+          } />
+          <Route path="/exercises" element={
+            <ExercisesPage />
+          } />
+          <Route path="/profile" element={
+            <ProfilePage />
+          } />
+          {/* <Route path="/" element={
             <RequireAuth>
               <HomePage />
             </RequireAuth>
@@ -31,7 +40,7 @@ function App() {
             <RequireAuth>
               <ProfilePage />
             </RequireAuth>
-          } />
+          } /> */}
 
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
