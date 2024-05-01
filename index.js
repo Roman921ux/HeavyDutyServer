@@ -40,11 +40,13 @@ app.delete('/event/:id', CheckAuth, removeOne)
 
 app.get('/exercise', CheckAuth, getAllExercise)
 
+const PORT = 4444;
+const HOST = '0.0.0.0';
 
-app.listen(4444, (err) => {
+app.listen(PORT, HOST, (err) => {
   if (err) {
     return console.log(err)
   }
 
-  console.log('Server Ok!')
+  console.log(`Сервер запущен по адресу http://${HOST}:${PORT}/`)
 })
