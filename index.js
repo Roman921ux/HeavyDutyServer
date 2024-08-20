@@ -7,7 +7,7 @@ import CheckAuth from './utils/checkAuth.js'
 import { getMe, login, register } from './controllrs/UserControllers.js'
 import { eventCreateValidation } from './validation/event.js'
 import { createEvent, createEventApproach, getAll, removeEventSet, removeOne, updateEvent } from './controllrs/EventController.js'
-import { getAllExercise } from './controllrs/ExercisesController.js'
+import { createExerciseForAll, getAllExercise } from './controllrs/ExercisesController.js'
 //
 import ExerciseModel from './models/Exercise.js'
 
@@ -31,16 +31,15 @@ app.post('/auth/login', loginValidation, login)
 app.post('/auth/register', registerValidation, register)
 app.get('/auth/me', CheckAuth, getMe)
 
-app.post('/event', CheckAuth, eventCreateValidation, createEvent)
+app.post('/event', CheckAuth, eventCreateValidation, createEvent) // создать event
 app.patch('/event/:id', CheckAuth, updateEvent) // изменить set
 app.delete('/event/set/:id', CheckAuth, removeEventSet) // удалит set
-
-app.post('/event/approach', CheckAuth, createEventApproach)
-app.get('/event', CheckAuth, getAll)
-app.delete('/event/:id', CheckAuth, removeOne)
-
+app.post('/event/approach', CheckAuth, createEventApproach) // создать set
+app.get('/event', CheckAuth, getAll) // получить все events
+app.delete('/event/:id', CheckAuth, removeOne) // удалить event
 
 app.get('/exercise', CheckAuth, getAllExercise)
+app.post('/exercise', CheckAuth, createExerciseForAll)
 
 const PORT = 4444;
 const HOST = '0.0.0.0';

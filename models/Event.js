@@ -2,7 +2,8 @@ import mongoose from 'mongoose';
 
 const approachSchema = new mongoose.Schema({
   kg: { type: Number, required: true },
-  repeat: { type: Number, required: true }
+  repeat: { type: Number, required: true },
+  refusing: { type: Number, required: true, default: 0}
 });
 
 const eventSchema = new mongoose.Schema({

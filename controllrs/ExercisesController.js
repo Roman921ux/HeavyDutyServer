@@ -13,3 +13,21 @@ export const getAllExercise = async (req, res) => {
     })
   }
 }
+
+export const createExerciseForAll = async (req, res) => {
+  try {
+    const doc = new ExerciseModel({
+      title: req.body.title,
+      description: req.body.description,
+      category: req.body.category
+    });
+    const exercise = await doc.save();
+    res.json(exercise);
+  } catch (error) {
+    res.status(400).json({
+      message: 'Exercise не создан'
+    })
+  }
+}
+
+
