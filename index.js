@@ -11,9 +11,11 @@ import { getAllExercise } from './controllrs/ExercisesController.js'
 //
 import ExerciseModel from './models/Exercise.js'
 
+// mongodb+srv://skorohodroman921:A2RGYiv5qkCrHNfl@cluster0.awglyfa.mongodb.net/heavyDuty
 
-
-mongoose.connect('mongodb+srv://skorohodroman921:A2RGYiv5qkCrHNfl@cluster0.awglyfa.mongodb.net/heavyDuty')
+// mongodb+srv://skorohodroman921:<password>@cluster1.mpr23.mongodb.net/
+// mongodb+srv://skorohodroman921:A2RGYiv5qkCrHNfl@cluster1.mpr23.mongodb.net/?retryWrites=true&w=majority&appName=Cluster1
+mongoose.connect('mongodb+srv://skorohodroman921:A2RGYiv5qkCrHNfl@cluster1.mpr23.mongodb.net/heavyDuty')
   .then(() => { console.log('DB OK!') })
   .catch((err) => console.log('Error DB', err))
 
