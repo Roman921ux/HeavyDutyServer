@@ -3,7 +3,8 @@ import mongoose from 'mongoose';
 const approachSchema = new mongoose.Schema({
   kg: { type: Number, required: true },
   repeat: { type: Number, required: true },
-  refusing: { type: Number, required: true, default: 0}
+  refusing: { type: Number, required: true, default: 0},
+  comment: { type: String, required: true, default: ''}
 });
 
 const eventSchema = new mongoose.Schema({
